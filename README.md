@@ -60,7 +60,7 @@ When the user keys in "AUTO" into the serial terminal, a process of setting up t
 4. UART1 RX receives ESP response
 5. Code checks for a valid response
 6. If a valid response is received, then move on to the next state
-7. Otherwise, remain in the same state and recurse back to step 1
+7. Otherwise, return back to the previous state and recurse back to step 1
 8. Repeat steps 1 to 5 for the next state until the serial terminal displays "CIPSTATUS:2"
 9. Let the user key in the IP Address on an external device to run the website
 10. Repeat steps 1 to 5 until the website is successfully set up
