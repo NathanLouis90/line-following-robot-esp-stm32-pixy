@@ -86,6 +86,7 @@ The SPI state machine logic works rather similarly to UART, however, a key diffe
 3. SPI TX CPLT Callback will be called when MOSI finishes transmitting, which will trigger MISO to start reception
 4. SPI RX CPLT Callback will be called once data has been fully received by Pixy, allowing data to be parsed
 5. The parsed data will be appended with a checksum suffix depending on the checksum equivalence, and trigger UART2 TX to begin transmitting back to the serial terminal
+
 During AUTO mode, the UART2 RX will be idle, and the process will begin at step 2, where the "GET ALL" hex command is being transmitted to the Pixy at specific intervals
 
 ## Motor State Machine Logic
