@@ -4,14 +4,21 @@
  *
  * Version History:
  * ---------------------------------------------------------------------
- * Version 1.0  |
+ * Version 1.0  | Added helper functions for esp, which includes
+ *		  initialization of struct pointers, restarting UART
+ *		  reception, parsing of website information, etc
  *
- * Version 2.0  |
+ * Version 2.0  | Added helper functions for pixy, which includes
+ *		  initialization of pixy struct and resetting of vector
+ *		  and barcode contents
  *
- * Version 3.0  |
+ * Version 3.0  | Added helper functions for motors, which includes
+ *		  starting and stopping PWM duty cycles, obtaining
+ *		  CCR values for timers, testing of motors, etc
  *
  * Description:
- *
+ * This file defines all the helper functions declared in esp.h, pixy.h,
+ * and motor.h. 
  */
 
 #include "esp.h"
