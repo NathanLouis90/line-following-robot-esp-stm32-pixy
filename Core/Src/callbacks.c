@@ -4,14 +4,17 @@
  *
  * Version History:
  * ---------------------------------------------------------------------
- * Version 1.0  |
+ * Version 1.0  | Added GPIO External Interrupt, UART Error, UART TxCplt
+ *		  and UART Rx Event Callbacks
  *
- * Version 2.0  |
+ * Version 2.0  | Added SPI Callbacks for Rx and Tx
  *
- * Version 3.0  |
+ * Version 3.0  | Added lines of code for velocimetric wheels for 
+ *		  velocity calculations
  *
  * Description:
- *
+ * This file defines the weak callbacks if an interrupt occurs
+ * e.g. UART peripheral receives data.
  */
 
 #include "main.h"
