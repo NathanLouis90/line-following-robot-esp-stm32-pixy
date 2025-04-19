@@ -26,6 +26,16 @@ The robot system can be in one of four modes:
 1. UART RX receives data and processes AT Command (and immediately starts reception again)
 2. UART TX gets triggered by a loaded data size and immediately starts transmission
 
+## TEST Mode UARTs and ESP Dataflow
+![UART Dataflow drawio](https://github.com/user-attachments/assets/d1a736f5-8fc5-4d41-a980-9415c7016510)
+1. UART2 RX receives AT Command keyed in by the user on a serial terminal and processes it
+2. UART1 TX gets triggered by a loaded data size and transmits to ESP WiFi Module
+3. ESP RX receives data and starts processing
+4. ESP TX sends back a response to UART1 RX 
+5. UART1 RX receives data, processes it, and loads up UART2 TX data size
+6. UART2 TX gets triggered by a loaded data size and starts tranmitting back to serial terminal
+__Take note that the ESP WiFi Module sends back responses in chunks, hence UART1 RX must continuously be in reception mode to avoid missing data__
+
 ## Website Setup and AUTO Mode State Transition Machine Logic
 ![ESP State Machine drawio](https://github.com/user-attachments/assets/3918f1a6-4c21-4383-9667-d6dc75230058)
 1. UART1 TX sends AT Command to ESP RX
@@ -35,6 +45,8 @@ The robot system can be in one of four modes:
 5. Code checks for a valid response
 6. If a valid response is received, then move on to the next state
 7. Otherwise, remain in the same state and recurse back to step 1
-8. Repeat step 1 for the next state until the website is successfully set up
+8. Repeat step 1 for the next state until serial terminal display "CIPSTATUS:2"
+9. Let the user key in IP Address onto an external device to run website
+10. Repeat step 1 until website is successfully setup
 
 
