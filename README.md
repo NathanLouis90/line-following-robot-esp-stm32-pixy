@@ -72,7 +72,7 @@ Once the website is successfully set up, it will allow the user to toggle the LE
 ![Website Communication State Machine drawio](https://github.com/user-attachments/assets/faec439b-4bf3-4d68-a8ec-58c287d985fb)
 
 1. UART1 RX receives data when the user interacts with the website
-2. If "GET /favicon" is received, respond with 'CIPCLOSE=ID' to effectively manage spam requests initiated by the website's favicon request
+2. If "GET /favicon" is received, respond with 'CIPCLOSE=CONNECTION_ID' to effectively manage spam requests initiated by the website's favicon request
 3. If "GET /COMMAND_ID" (COMMAND_ID can be either "1", "2", or "3" as stated in the HTML code) is received, perform either toggling of LEDs or updating of the website of Pixy movement state, and transition to the next state
 4. If ">" is received, send "CIPSEND=CONNECTION_ID, DATA_SIZE", where DATA_SIZE corresponds to the length of data you wish to transmit to the website (in the HTML code, it is 2), and transition to the next state
 5. Send the corresponding command to the website to display ON or OFF for LEDs, or display the Pixy movement command state
