@@ -24,13 +24,14 @@ The robot system can be in one of four modes:
 - AUTO mode (where the user can set up a website and allow the robot to follow a line autonomously)
 
 ## UART Reception and Transmission State Machine Logic
-To avoid race conditions, UART TX can only perform transmission when it is in the idle state, as the UART RX is much faster than the UART TX; hence, a state sequence is implemented such that it does not lead to data loss or buffer overrun. Take note that UART TX is immediately triggered when UART RX receives data, and reception is always restarted after received data has been parsed properly. It is also possible for the user to implement timeouts to "delay" the transmission, however, this is not implemented in my code. 
+To avoid race conditions, UART TX can only perform transmission when it is in the idle state, as the UART RX is much faster than the UART TX; hence, a state sequence is implemented such that it does not lead to data loss or buffer overrun. Take note that UART TX is immediately triggered when UART RX receives data, and reception is always restarted after received data has been parsed properly. It is also possible for the user to implement timeouts to "delay" the transmission, however, this is not implemented here. 
 
 ![UART State Machine drawio](https://github.com/user-attachments/assets/b936698d-a7e0-4a21-a1f5-3a4f9c68565f)
 
 There are two scenarios in which the UART can be in: either the UART received data properly, or it encountered an error. For the former, the process is as follows:
 1. UART RX receives data and processes AT Command (and immediately starts reception again)
 2. UART TX gets triggered by a loaded data size and immediately starts transmission
+
 For error handling, the process is as follows:
 1. UART RX encounters an error, and the software interrupt error callback is called
 2. UART RX aborts reception, clears error flags, and restarts reception
@@ -60,21 +61,22 @@ When the user keys in "AUTO" into the serial terminal, a process of setting up t
 4. UART1 RX receives ESP response
 5. Code checks for a valid response
 6. If a valid response is received, then move on to the next state
-7. Otherwise, return back to the previous state and recurse back to step 1
+7. Otherwise, return to the previous state and recurse back to step 1
 8. Repeat steps 1 to 5 for the next state until the serial terminal displays "CIPSTATUS:2"
 9. Let the user key in the IP Address on an external device to run the website
 10. Repeat steps 1 to 5 until the website is successfully set up
 
 ## Website Communication State Machine Logic
-Once the website is successfully set up, it will allow the user to toggle the LEDs or display the information parsed by the Pixy.
+Once the website is successfully set up, it will allow the user to toggle the LEDs or display the information parsed by the Pixy. CIPSEND is a command used to send data over a TCP connection. CIPCLOSE is a command used to close a connection.
 
 ![Website Communication State Machine drawio](https://github.com/user-attachments/assets/faec439b-4bf3-4d68-a8ec-58c287d985fb)
 
 1. UART1 RX receives data when the user interacts with the website
-2. If "GET /favicon" is received, send "CIPCLOSE=ID" to handle new requests
-3. If "GET /ID" (ID can be either "1", "2", or "3") is received, perform either toggling of LEDs or updating of the website of Pixy movement state, and transition to the next state
-4. If ">" is received, send "CIPSEND=ID, DATA" where DATA corresponds to HTML settings to display ON or OFF for LEDs, or Pixy movement state, and transition to the next state
-5. If "SEND OK" is received, send "AT+CIPCLOSE=ID" to finish handling the TCP request to allow the website to display changes on the website and transition to "WaitingWebsiteSend" state to parse future incoming data from the user
+2. If "GET /favicon" is received, respond with 'CIPCLOSE=ID' to effectively manage spam requests initiated by the website's favicon request
+3. If "GET /COMMAND_ID" (COMMAND_ID can be either "1", "2", or "3" as stated in the HTML code) is received, perform either toggling of LEDs or updating of the website of Pixy movement state, and transition to the next state
+4. If ">" is received, send "CIPSEND=CONNECTION_ID, DATA_SIZE", where DATA_SIZE corresponds to the length of data you wish to transmit to the website (in the HTML code, it is 2), and transition to the next state
+5. Send the corresponding command to the website to display ON or OFF for LEDs, or display the Pixy movement command state
+6. If "SEND OK" is received, send "AT+CIPCLOSE=CONNECTION_ID" to finish handling the TCP request to allow the website to display changes on the website and transition to "WaitingWebsiteSend" state to parse future incoming data from the user
 
 ## Pixy SPI Interface State Machine Logic 
 The SPI state machine logic works rather similarly to UART, however, a key difference is that data is handled synchronously (where SS is pulled low to trigger the CLK signal), hence error handling for frame or noise is not necessary for SPI. 
@@ -87,12 +89,12 @@ The SPI state machine logic works rather similarly to UART, however, a key diffe
 4. SPI RX CPLT Callback will be called once data has been fully received by Pixy, allowing data to be parsed
 5. The parsed data will be appended with a checksum suffix depending on the checksum equivalence, and trigger UART2 TX to begin transmitting back to the serial terminal
 
-During AUTO mode, the UART2 RX will be idle, and the process will begin at step 2, where the "GET ALL" hex command is being transmitted to the Pixy at specific intervals
+During AUTO mode, the UART2 RX will be idle, and the process will begin at step 2, where the "GET ALL" hex command is being transmitted to the Pixy at specific intervals.
 
 ## Motor State Machine Logic
 This state machine is very simple, as it only involves the parsing of data received sent by the user at the serial terminal.
 
 ![Motor State Machine drawio](https://github.com/user-attachments/assets/97754ebe-099b-4efa-8a6a-d18709e7bbf5)
 
-1. UART2 RX receives an "at" command, parses it by comparing it to other "at" commands"
+1. UART2 RX receives an "at" command, and parses it by comparing it to other "at" commands
 2. Depending on the "at" command, an action will be performed, and a corresponding response will be sent back to the serial terminal via UART2 TX
