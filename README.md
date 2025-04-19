@@ -91,7 +91,7 @@ During AUTO mode, the UART2 RX will be idle, and the process will begin at step 
 ## Motor State Machine Logic
 This state machine is very simple, as it only involves the parsing of data received sent by the user at the serial terminal.
 
-![Motor State Machine drawio](https://github.com/user-attachments/assets/73c54031-1119-440c-a594-63bff4926139)
+![Motor State Machine drawio](https://github.com/user-attachments/assets/97754ebe-099b-4efa-8a6a-d18709e7bbf5)
 
 1. UART2 RX receives an "at" command, parses it (by comparing it to other "at" commands"
 2. Depending on the "at" command, an action will be performed, and a corresponding response will be sent back to the serial terminal via UART2 TX
