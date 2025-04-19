@@ -34,7 +34,8 @@ The robot system can be in one of four modes:
 4. ESP TX sends back a response to UART1 RX 
 5. UART1 RX receives data, processes it, and loads up UART2 TX data size
 6. UART2 TX gets triggered by a loaded data size and starts tranmitting back to serial terminal
-__Take note that the ESP WiFi Module sends back responses in chunks, hence UART1 RX must continuously be in reception mode to avoid missing data__
+
+__Take note that the ESP WiFi Module sends back responses in chunks, hence UART1 RX must continuously be in reception mode to avoid missing data!__
 
 ## Website Setup and AUTO Mode State Transition Machine Logic
 ![ESP State Machine drawio](https://github.com/user-attachments/assets/3918f1a6-4c21-4383-9667-d6dc75230058)
