@@ -1,0 +1,10 @@
+../Core/Src/esp.c:95:6:start_uart_rx_to_idle	4
+../Core/Src/esp.c:123:6:start_uart_tx	1
+../Core/Src/esp.c:135:6:process_uart_rx_error	5
+../Core/Src/esp.c:159:6:esp_control	2
+../Core/Src/esp.c:169:6:process_uart_received_data	8
+../Core/Src/esp.c:224:6:check_system_mode_change	21
+../Core/Src/esp.c:298:6:reset_uart_rx_buffer	1
+../Core/Src/esp.c:309:6:process_esp_auto_mode	13
+../Core/Src/esp.c:373:6:setup_website	31
+../Core/Src/esp.c:483:6:uart_state_machine	8

@@ -1,0 +1,6 @@
+../Core/Src/pixy.c:71:6:pixy_control	16	static
+../Core/Src/pixy.c:102:6:process_pixy_data	24	static
+../Core/Src/pixy.c:137:12:find_afc1_response	32	static
+../Core/Src/pixy.c:216:6:extract_features	24	static
+../Core/Src/pixy.c:286:6:line_following_algorithm	80	static
+../Core/Src/pixy.c:496:6:update_website_movement_state	16	static

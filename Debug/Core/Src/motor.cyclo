@@ -1,0 +1,4 @@
+../Core/Src/motor.c:74:6:motor_control	9
+../Core/Src/motor.c:122:6:process_motor_data	14
+../Core/Src/motor.c:230:6:apply_pid	5
+../Core/Src/motor.c:289:6:process_motor_in_auto_mode	6

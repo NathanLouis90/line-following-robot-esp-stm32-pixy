@@ -1,0 +1,6 @@
+../Core/Src/callbacks.c:35:6:HAL_GPIO_EXTI_Callback	9
+../Core/Src/callbacks.c:76:6:HAL_UART_ErrorCallback	3
+../Core/Src/callbacks.c:83:6:HAL_UART_TxCpltCallback	3
+../Core/Src/callbacks.c:94:6:HAL_UARTEx_RxEventCallback	3
+../Core/Src/callbacks.c:106:6:HAL_SPI_TxCpltCallback	2
+../Core/Src/callbacks.c:115:6:HAL_SPI_RxCpltCallback	2
