@@ -23,9 +23,8 @@ The robot system can be in one of four modes:
 
 ## UART Reception and Transmission State Machine Logic
 ![UART State Machine drawio](https://github.com/user-attachments/assets/b936698d-a7e0-4a21-a1f5-3a4f9c68565f)
-1. User inputs AT Command into a serial terminal
-2. UART2 RX receives and processes AT Command (and immediately starts reception again)
-3. UART1 TX gets triggered by a loaded data size and immediately starts transmission
+1. UART RX receives data and processes AT Command (and immediately starts reception again)
+2. UART1 TX gets triggered by a loaded data size and immediately starts transmission
 
 ## Website Setup and AUTO Mode State Transition Machine Logic
 ![ESP State Machine drawio](https://github.com/user-attachments/assets/3918f1a6-4c21-4383-9667-d6dc75230058)
