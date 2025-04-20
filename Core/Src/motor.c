@@ -5,18 +5,18 @@
  * Version History:
  * ---------------------------------------------------------------------
  * Version 1.0  | Definition of basic structs for motors, velocimetric
- * 				  wheels, as well as simple state machine logic for
- * 				  user input commands for motor
+ * 		  wheels, as well as simple state machine logic for
+ * 		  user input commands for motor
  *
  * Version 2.0  | Proper definition of processing of user inputs
- * 				  for motor commands
+ * 		  for motor commands
  *
  * Version 3.0  | Implemented PD logic to allow both motors to
- * 				  rotate relatively evenly
+ * 		  rotate relatively evenly
  *
  * Version 4.0  | Inclusion of integral term to define PID logic as
- * 				  well as proper definition of motors operating
- * 				  under AUTO mode
+ * 		  well as proper definition of motors operating
+ * 		  under AUTO mode
  *
  * Description:
  * This file contains motor control logic for the robot car. It defines
