@@ -5,25 +5,25 @@
  * Version History:
  * ---------------------------------------------------------------------
  * Version 0.0  | Defined basic structs for uarts, error handling code
- * 				  as well as state machine logic that is based on a
- * 				  timeout system that handles transmission based on
- * 				  AT command received
+ * 		  as well as state machine logic that is based on a
+ * 		  timeout system that handles transmission based on
+ * 		  AT command received
  *
  * Version 1.0  | Enhanced the state machine logic by removing the
- * 				  timeout system and replaced with immediate tx of
- * 				  AT response from ESP WiFi module
+ * 		  timeout system and replaced with immediate tx of
+ * 		  AT response from ESP WiFi module
  *
  * Version 2.0  | Added a function to allow changing of system
- * 				  mode in the event that the user would like to test
- * 				  other components such as pixy camera or motors
+ * 		  mode in the event that the user would like to test
+ * 		  other components such as pixy camera or motors
  *
  * Version 3.0  | Added the functions related to Auto Mode which
- * 				  includes setting up of website by sending a chain
- * 				  of AT commands
+ * 		  includes setting up of website by sending a chain
+ * 		  of AT commands
  *
  * Version 4.0  | Enhanced the state machine logic under AUTO mode
- * 				  to allow sending and processing of TCP requests
- * 				  and responses
+ * 		  to allow sending and processing of TCP requests
+ * 		  and responses
  *
  * Description:
  * This file defines the two uarts used to communicate with the user
