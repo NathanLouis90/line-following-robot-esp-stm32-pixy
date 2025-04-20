@@ -53,18 +53,17 @@ __Take note that the ESP WiFi Module sends back responses in chunks, hence UART1
 ## Website Setup and AUTO Mode State Transition Machine Logic
 When the user keys in "AUTO" into the serial terminal, a process of setting up the website ensues. A back-and-forth process of transmission and reception occurs, where it waits and checks the responses and transitions to the next state if the response is valid. If not, it transitions back to its old state, where it restarts the process as defined in the old state.
 
-![ESP State Machine drawio](https://github.com/user-attachments/assets/92182d0a-c910-4378-9466-4a488653e294)
+![ESP State Machine drawio](https://github.com/user-attachments/assets/eea7eca6-e5c3-4d50-9be8-956e42bde6a5)
 
-1. UART1 TX sends AT Command to ESP RX
-2. ESP RX receives AT Command and starts processing
+1. If UART1 TX has not transmitted, send AT Command via UART1 TX to ESP RX
+2. ESP RX receives AT Command and starts processing 
 3. ESP TX sends back a response
 4. UART1 RX receives ESP response
-5. Code checks for a valid response
-6. If a valid response is received, then move on to the next state
-7. Otherwise, return to the previous state and recurse back to step 1
-8. Repeat steps 1 to 5 for the next state until the serial terminal displays "CIPSTATUS:2"
-9. Let the user key in the IP Address on an external device to run the website
-10. Repeat steps 1 to 5 until the website is successfully set up
+5. If a valid response is received, then move on to the next state
+6. Otherwise, return to the previous state and recurse back to step 1
+7. Repeat steps 1 to 5 for the next state until the serial terminal displays "CIPSTATUS:2"
+8. Let the user key in the IP Address on an external device to run the website
+9. Repeat steps 1 to 5 until the website is successfully set up
 
 ## Website Communication State Machine Logic
 Once the website is successfully set up, it will allow the user to toggle the LEDs or display the information parsed by the Pixy. CIPSEND is a command used to send data over a TCP connection. CIPCLOSE is a command used to close a connection.
