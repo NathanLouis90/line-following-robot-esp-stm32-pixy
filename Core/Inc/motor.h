@@ -5,19 +5,19 @@
  * Version History:
  * ---------------------------------------------------------------------
  * Version 1.0  | Added structs and enums for motors, velocimetric
- * 				  wheels states and functions for handling user inputs
- * 				  and setting PWM duty cycles
+ * 		  wheels states and functions for handling user inputs
+ * 		  and setting PWM duty cycles
  *
  * Version 2.0  | Added helper functions for starting, stopping,
- * 				  and updating of PWM duty cycles as well as resetting
- * 				  velocimetric parameters
+ * 		  and updating of PWM duty cycles as well as resetting
+ * 		  velocimetric parameters
  *
  * Version 3.0  | Added PD controller struct and Test Motor struct to
- * 				  obtain the gradient for the motors
+ * 		  obtain the gradient for the motors
  *
  * Version 4.0  | Included integral to fully implement PID controller
- * 				  as well as constants and macros for PID. Added
- * 				  more helper functions to reset struct properties.
+ * 		  as well as constants and macros for PID. Added
+ * 		  more helper functions to reset struct properties.
  *
  * Description:
  * This file defines structs, constants, macros for handling user input
