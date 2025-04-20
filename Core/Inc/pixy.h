@@ -5,19 +5,19 @@
  * Version History:
  * ---------------------------------------------------------------------
  * Version 1.0  | Added the struct for pixy, basic function prototypes
- * 				  for pixy data, enum for pixy commands, suffixes for
- * 				  checksum
+ * 		  for pixy data, enum for pixy commands, suffixes for
+ * 		  checksum
  *
  * Version 2.0  | Added the structs for vectors and barcode information.
- * 				  Added function for extracting features
+ * 		  Added function for extracting features
  *
  * Version 3.0  | Added enums for pixy command movement state to
- * 				  display on website as well as indicators for AFC1
- * 				  response
+ * 		  display on website as well as indicators for AFC1
+ * 		  response
  *
  * Version 4.0  | Added helper function prototypes for initialisation
- * 				  and reset of struct variables, as well as a line
- * 				  following algorithm function for decision-making
+ * 		  and reset of struct variables, as well as a line
+ * 		  following algorithm function for decision-making
  *
  * Description:
  * This file defines structs, constants, macros for handling SPI
