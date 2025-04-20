@@ -5,20 +5,20 @@
  * Version History:
  * ---------------------------------------------------------------------
  * Version 1.0  | Added UART TX and UART RX structs. Added states for
- * 				  UART communication flow as well as states for AUTO
- * 				  mode phase transition. Added basic functions to allow
- * 				  sending, receiving and processing of AT commands
- * 				  from serial terminal.
+ * 		  UART communication flow as well as states for AUTO
+ * 		  mode phase transition. Added basic functions to allow
+ * 		  sending, receiving and processing of AT commands
+ * 		  from serial terminal.
  *
  * Version 2.0  | Added an ESP struct to track the state during AUTO
- * 				  mode and transmission success. Added more enums to
- * 				  track website state. Added helper functions to
- * 				  initialize and sending of AT commands during AUTO
- * 				  mode, toggling of LEDs and parsing of IP address.
+ * 		  mode and transmission success. Added more enums to
+ * 		  track website state. Added helper functions to
+ * 		  initialize and sending of AT commands during AUTO
+ * 		  mode, toggling of LEDs and parsing of IP address.
  *
  * Version 3.0  | Added function prototypes to implement setting up of
- * 				  website as well as helper functions to make the code
- * 				  more modular
+ * 		  website as well as helper functions to make the code
+ * 		  more modular
  *
  * Description:
  * This file describes the functions, macros, structs and enums necessary
