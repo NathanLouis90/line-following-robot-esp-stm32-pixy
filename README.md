@@ -68,7 +68,7 @@ When the user keys in "AUTO" into the serial terminal, a process of setting up t
 ## Website Communication State Machine Logic
 Once the website is successfully set up, it will allow the user to toggle the LEDs or display the information parsed by the Pixy. CIPSEND is a command used to send data over a TCP connection. CIPCLOSE is a command used to close a connection.
 
-![Website Communication State Machine drawio](https://github.com/user-attachments/assets/faec439b-4bf3-4d68-a8ec-58c287d985fb)
+![Website Communication State Machine drawio](https://github.com/user-attachments/assets/33845167-40ff-4a35-b497-2126a1ae71bb)
 
 1. UART1 RX receives data when the user interacts with the website
 2. If "GET /favicon" is received, respond with 'CIPCLOSE=CONNECTION_ID' to effectively manage spam requests initiated by the website's favicon request
