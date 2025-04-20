@@ -5,21 +5,21 @@
  * Version History:
  * ---------------------------------------------------------------------
  * Version 1.0  | Defined the state logic for pixy camera, added
- * 				  relevant structs which included AEC1 commands, as well
- * 				  as a functions that parses data and check for AFC1
- * 				  response.
+ * 		  relevant structs which included AEC1 commands, as well
+ * 		  as a functions that parses data and check for AFC1
+ * 		  response.
  *
  * Version 2.0  | Proper definition of a function to fully extract and
- * 				  parse raw SPI data into useful information
+ * 		  parse raw SPI data into useful information
  *
  * Version 3.0  | Enhanced the logic for the parsing of raw SPI data
  *
  * Version 4.0  | Implemented line following algorithm to decide based
- * 				  on the data extracted
+ * 		  on the data extracted
  *
  * Version 5.0  | Enhanced the line following algorithm as well as
- * 				  defined a function that interface with the ESP WiFi
- * 				  Module to state its intended movement for the user
+ * 		  defined a function that interface with the ESP WiFi
+ * 		  Module to state its intended movement for the user
  *
  * Description:
  * This file contains the pixy camera logic which interfaces with the
