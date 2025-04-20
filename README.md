@@ -81,7 +81,7 @@ Once the website is successfully set up, it will allow the user to toggle the LE
 ## Pixy SPI Interface State Machine Logic 
 The SPI state machine logic works rather similarly to UART, however, a key difference is that data is handled synchronously (where SS is pulled low to trigger the CLK signal), hence error handling for frame or noise is not necessary for SPI. 
 
-![Pixy State Machine drawio](https://github.com/user-attachments/assets/05497c71-573d-4775-ba9e-d1c2d39f89a4)
+![Pixy State Machine drawio](https://github.com/user-attachments/assets/3ce625a3-bb5f-4a23-8383-5859cb04a115)
 
 1. UART2 RX receives a hex command from the serial terminal keyed by the user
 2. UART2 RX processes it and triggers Pixy to start transmitting via SPI TX IT
@@ -89,12 +89,12 @@ The SPI state machine logic works rather similarly to UART, however, a key diffe
 4. SPI RX CPLT Callback will be called once data has been fully received by Pixy, allowing data to be parsed
 5. The parsed data will be appended with a checksum suffix depending on the checksum equivalence, and trigger UART2 TX to begin transmitting back to the serial terminal
 
-During AUTO mode, the UART2 RX will be idle, and the process will begin at step 2, where the "GET ALL" hex command is being transmitted to the Pixy at specific intervals.
+During AUTO mode, the UART2 RX will be idle, and the process will begin at step 2, where the "GET ALL" hex command is transmitted to the Pixy at specific intervals.
 
 ## Motor State Machine Logic
-This state machine is very simple, as it only involves the parsing of data received sent by the user at the serial terminal.
+This state machine is straightforward, as it only involves the parsing of data received from the user at the serial terminal.
 
-![Motor State Machine drawio](https://github.com/user-attachments/assets/97754ebe-099b-4efa-8a6a-d18709e7bbf5)
+![Motor State Machine drawio](https://github.com/user-attachments/assets/8a545432-6315-4858-b5b6-da6625c54247)
 
 1. UART2 RX receives an "at" command, and parses it by comparing it to other "at" commands
 2. Depending on the "at" command, an action will be performed, and a corresponding response will be sent back to the serial terminal via UART2 TX
