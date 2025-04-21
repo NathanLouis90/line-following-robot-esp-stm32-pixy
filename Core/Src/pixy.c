@@ -60,9 +60,9 @@ Pixy_t g_Pixy = {
 		.AEC1_commands[7] = { 0xAE, 0xC1, 0x30, 0x02, 0x01, 0x05 }, // get all except intersections
 		.AEC1_commands[8] = { 0xAE, 0xC1, 0x30, 0x02, 0x01, 0x06 }, // get all except vectors
 		.AEC1_commands[9] = { 0xAE, 0xC1, 0x16, 0x02, 0x00, 0x00 }, // turn off lamp
-		.AEC1_commands[10] = {0xAE, 0xC1, 0x3A, 0x02, 0x3C, 0x00}, // at intersection, turn left cmd
-		.AEC1_commands[11] = {0xAE, 0xC1, 0x3A, 0x02, 0xC4, 0xFF}, // at intersection, turn right cmd
-		.AEC1_commands[12] = {0xAE, 0xC1, 0x3A, 0x02, 0x00, 0x00}, // at intersection, turn fwd cmd
+		.AEC1_commands[10] = { 0xAE, 0xC1, 0x3A, 0x02, 0x3C, 0x00 }, // at intersection, turn left cmd
+		.AEC1_commands[11] = { 0xAE, 0xC1, 0x3A, 0x02, 0xC4, 0xFF }, // at intersection, turn right cmd
+		.AEC1_commands[12] = { 0xAE, 0xC1, 0x3A, 0x02, 0x00, 0x00 }, // at intersection, turn fwd cmd
 		.hspi = &hspi2, .rx_buffer = { 0 }, .state = PixyIdle, .ssPort =
 		GPIOB, .ssPin = GPIO_PIN_12, .checksum_valid = false, .response_packet_type = 0,
 		.payload_size = 0, .calculated_checksum = 0, .checksum_received = 0,
