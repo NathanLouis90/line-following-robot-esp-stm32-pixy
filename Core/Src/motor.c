@@ -272,7 +272,7 @@ void apply_pid(Motor_t *motor, PIDController_t *pid, VelocimetricWheel_t *left,
 
 	// apply the adjustments
 	int32_t new_left_ccr = (int32_t) (motor->left_CCR + left_adjustment);
-	int32_t new_right_ccr = (motor->right_CCR + right_adjustment);
+	int32_t new_right_ccr = (int32_t) (motor->right_CCR + right_adjustment);
 
 	// change the CCR values
 	motor->left_CCR = (uint16_t) new_left_ccr;
