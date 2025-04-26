@@ -82,13 +82,13 @@ The SPI state machine logic works rather similarly to UART, however, a key diffe
 
 ![Pixy State Machine drawio](https://github.com/user-attachments/assets/3ce625a3-bb5f-4a23-8383-5859cb04a115)
 
-1. UART2 RX receives a hex command from the serial terminal keyed by the user
+1. UART2 RX receives a HEX command from the serial terminal keyed by the user
 2. UART2 RX processes it and triggers Pixy to start transmitting via SPI TX IT
 3. SPI TX CPLT Callback will be called when MOSI finishes transmitting, which will trigger MISO to start reception
 4. SPI RX CPLT Callback will be called once data has been fully received by Pixy, allowing data to be parsed
 5. The parsed data will be appended with a checksum suffix depending on the checksum equivalence, and trigger UART2 TX to begin transmitting back to the serial terminal
 
-During AUTO mode, the UART2 RX will be idle, and the process will begin at step 2, where the "GET ALL" hex command is transmitted to the Pixy at specific intervals.
+During AUTO mode, the UART2 RX will be idle, and the process will begin at step 2, where the "GET ALL" HEX command is transmitted to the Pixy at specific intervals.
 
 ## Motor State Machine Logic
 This state machine is straightforward, as it only involves the parsing of data received from the user at the serial terminal.
@@ -97,3 +97,46 @@ This state machine is straightforward, as it only involves the parsing of data r
 
 1. UART2 RX receives an "at" command, and parses it by comparing it to other "at" commands
 2. Depending on the "at" command, an action will be performed, and a corresponding response will be sent back to the serial terminal via UART2 TX
+
+During AUTO mode, similar to the Pixy logic, UART2 RX will be idle. However, the movement of the motors will now depend on what the Pixy camera detects and processes.
+
+## Areas for Improvement
+### 1. UART AT Commands
+Sending "AT+RST" or "AT+RESTORE" leads to errors akin to UART despite resetting and restarting the reception. A solution is to accumulate data (UART1 RX will start accumulating data) at the instance UART1 TX transmits the command to the ESP, set a boolean flag to start the timeout, which pauses the UART2 TX from transmitting straightaway. Then, check the timeout in the while loop to ascertain whether UART2 TX is ready to transmit to the serial terminal. An untested code is written as such:
+
+```bash
+if (ESP.started_accumulating) {
+  if ( (uwTick - ESP.last_received_time) >= ESP.timeout_for_uart2_tx) {
+    ESP.started_accumulating = false;
+    uart2_tx.data_size = ESP.size_accumulated; // accumulated in the rx event callback from the esp
+
+    ESP.size_accumulated = 0; // reset the size
+  }
+}
+```
+### 2. UART TX Dependency on UART RX
+As mentioned above, UART TX will trigger immediately when UART RX receives data, but since there are some issues, such as race conditions and the fact that UART RX and UART TX operate at different clock cycles, it might be better to decouple UART RX and UART TX. One way is to set two pointers: __start__, which points to the start of transmission,n, and __end__, which points to the instance where a __'\0'__ is detected. UART TX will be continuously scanning the buffer for contents to transmit, thus acting independently from UART RX. The untested code is as follows:
+```bash
+uart_tx.end = (uint8_t *) strchr((char*) uart_tx.start, '\0');
+uart_tx.data_size = uart_tx.end - uart_tx.start;
+uart_tx.end += 1; // for the null char
+```
+
+### 3. Pixy Camera Algorithm
+Currently, the line-following algorithm is quite complex and requires better abstraction. Moreover, there is no proper logic to determine which command to send to the Pixy Camera, as only the "GET ALL" HEX command is being sent at an interval. The algorithm might benefit by only capturing vector lines initially, but at an instance where it detects an intersection, start a timeout and let the Pixy camera detect any barcode. A pseudo-state machine is written as such:
+```bash
+switch (Pixy.send_command_state) {
+  case SendVectorHex:
+    // send HEX command to find vectors
+    // if intersection present,
+    //   set timeout and switch state to SendBarcodeHex
+  case SendBarcodeHex:
+    // if within the timeout,
+    //   send HEX command to find barcode
+    // else,
+    //   switch state to SendVectorHex
+}
+```
+
+### 4. PID Tuning
+The PID is quite sensitive to overshoot and undershoot, and generally has a steady-state error, so some tuning is required. It might also benefit from extending the timeout, as it might take some time to calculate the velocity
