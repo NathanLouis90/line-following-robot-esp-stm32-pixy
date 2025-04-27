@@ -102,7 +102,7 @@ During AUTO mode, similar to the Pixy logic, UART2 RX will be idle. However, the
 
 ## Areas for Improvement
 ### 1. UART AT Commands
-Sending "AT+RST" or "AT+RESTORE" leads to errors akin to UART despite resetting and restarting the reception. A solution is to accumulate data (UART1 RX will start accumulating data) at the instance UART1 TX transmits the command to the ESP, set a boolean flag to start the timeout, which pauses the UART2 TX from transmitting straightaway. Then, check the timeout in the while loop to ascertain whether UART2 TX is ready to transmit to the serial terminal. An untested code is written as such:
+Sending "AT+RST" or "AT+RESTORE" leads to errors akin to UART despite resetting and restarting the reception. A solution is to accumulate data (UART1 RX will start accumulating data) at the instance UART1 TX transmits the command to the ESP, set a boolean flag to start the timeout, which pauses the UART2 TX from transmitting straightaway. Then, check the timeout in the while loop to ascertain whether UART2 TX is ready to transmit to the serial terminal. The code is as follows:
 
 ```bash
 if (ESP.started_accumulating) {
@@ -115,7 +115,7 @@ if (ESP.started_accumulating) {
 }
 ```
 ### 2. UART TX Dependency on UART RX
-As mentioned above, UART TX will trigger immediately when UART RX receives data, but since there are some issues, such as race conditions and the fact that UART RX and UART TX operate at different clock cycles, it might be better to decouple UART RX and UART TX. One way is to set two pointers: __start__, which points to the start of transmission,n, and __end__, which points to the instance where a __'\0'__ is detected. UART TX will be continuously scanning the buffer for contents to transmit, thus acting independently from UART RX. The untested code is as follows:
+As mentioned above, UART TX will trigger immediately when UART RX receives data, but since there are some issues, such as race conditions and the fact that UART RX and UART TX operate at different clock cycles, it might be better to decouple UART RX and UART TX. One way is to set two new pointers for UART TX: __start__, which points to the beginning of transmission, and __end__, which points to the instance where a __'\0'__ is detected. UART TX will continuously scan the buffer for contents to transmit (at an interval), thus acting independently from UART RX. The code is as follows:
 ```bash
 uart_tx.end = (uint8_t *) strchr((char*) uart_tx.start, '\0');
 uart_tx.data_size = uart_tx.end - uart_tx.start;
@@ -123,7 +123,7 @@ uart_tx.end += 1; // for the null char
 ```
 
 ### 3. Pixy Camera Algorithm
-Currently, the line-following algorithm is quite complex and requires better abstraction. Moreover, there is no proper logic to determine which command to send to the Pixy Camera, as only the "GET ALL" HEX command is being sent at an interval. The algorithm might benefit by only capturing vector lines initially, but at an instance where it detects an intersection, start a timeout and let the Pixy camera detect any barcode. A pseudo-state machine is written as such:
+Currently, the line-following algorithm is quite complex and requires better abstraction. Moreover, there is no proper logic to determine which command to send to the Pixy Camera, as only the "GET ALL" HEX command is being sent at an interval. The algorithm might benefit by only capturing vector lines initially, but at an instance where it detects an intersection, start a timeout and let the Pixy camera detect any barcode. The pseudocode is as follows:
 ```bash
 switch (Pixy.send_command_state) {
   case SendVectorHex:
