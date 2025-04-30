@@ -16,6 +16,7 @@
  *		  starting and stopping PWM duty cycles, obtaining
  *		  CCR values for timers, testing of motors, etc
  *
+ * Version 4.0	| Added helper function for UART transmission (post-testing)
  * Description:
  * This file defines all the helper functions declared in esp.h, pixy.h,
  * and motor.h. 
@@ -129,6 +130,12 @@ uint8_t extract_connection_id(const char *buffer) {
 		return connectionStr[5] - '0';  // extract the connection ID
 	}
 	return 0; // Default connection ID
+}
+
+// untested, added for better abstraction
+void transmit_via_uart(UART_Tx_t *uart_tx, uint8_t* start, uint16_t size) {
+	uart_tx->buffer_start = start;
+	uart_tx->data_size = size;
 }
 /* END ESP HELPERS */
 
