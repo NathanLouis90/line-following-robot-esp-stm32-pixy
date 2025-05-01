@@ -66,7 +66,7 @@ When the user keys in "AUTO" into the serial terminal, a process of setting up t
 9. Repeat steps 1 to 5 until the website is successfully set up
 
 ## Website Communication State Machine Logic
-Once the website is successfully set up, it will allow the user to toggle the LEDs or display the information parsed by the Pixy. CIPSEND is a command used to send data over a TCP connection. CIPCLOSE is a command used to close a connection.
+On a high level, the ESP WiFi Module will act as a server, and the user who keyed in the IP address on their gadget will act as the client. Once the website is successfully set up, the user can toggle the LEDs or display the information parsed by the Pixy. The client will send a bunch of GET Requests (when they press on the website) to the ESP, which will respond. Moreover, the ESP can send several AT Commands. An example is CIPSEND, a command to send data over a TCP connection, or CIPCLOSE, a command to close a connection.
 
 ![Website Communication State Machine drawio](https://github.com/user-attachments/assets/33845167-40ff-4a35-b497-2126a1ae71bb)
 
@@ -139,4 +139,9 @@ switch (Pixy.send_command_state) {
 ```
 
 ### 4. PID Tuning
-The PID is quite sensitive to overshoot and undershoot, and generally has a steady-state error, so some tuning is required. It might also benefit from extending the timeout, as it might take some time to calculate the velocity
+The PID is quite sensitive to overshoot and undershoot, and generally has a steady-state error, so some tuning is required. It might also benefit from extending the timeout, as it might take some time to calculate the velocity.
+
+## References
+1. https://www.datasheethub.com/espressif-esp8266-serial-esp-01-wifi-module/#google_vignette
+2. https://arduinogetstarted.com/tutorials/arduino-http-request
+3. https://docs.pixycam.com/wiki/doku.php?id=wiki:v2:overview
