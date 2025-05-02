@@ -66,7 +66,7 @@ When the user keys in "AUTO" into the serial terminal, a process of setting up t
 9. Repeat steps 1 to 5 until the website is successfully set up
 
 ## Website Communication State Machine Logic
-On a high level, the ESP WiFi Module will act as a server, and the user who keyed in the IP address on their gadget will act as the client. Once the website is successfully set up, the user can toggle the LEDs or display the information parsed by the Pixy. The client will send a bunch of GET Requests (when they press on the website) to the ESP, which will respond. Moreover, the ESP can send several AT Commands. An example is CIPSEND, a command to send data over a TCP connection, or CIPCLOSE, a command to close a connection.
+On a high level, the ESP WiFi Module will act as a server, and the user who keyed in the IP address on their gadget will act as the client. Once the website is successfully set up, the user can toggle the LEDs or display the information parsed by the Pixy. The client will send a bunch of GET Requests (when they press on the website) to the ESP, which will respond for e.g, toggling of an LED. Moreover, the STM32 can send several AT Commands to the ESP Server. An example is CIPSEND, a command to send data over a TCP connection, or CIPCLOSE, a command to close a connection.
 
 ![Website Communication State Machine drawio](https://github.com/user-attachments/assets/33845167-40ff-4a35-b497-2126a1ae71bb)
 
