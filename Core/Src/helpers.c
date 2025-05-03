@@ -17,6 +17,7 @@
  *		  CCR values for timers, testing of motors, etc
  *
  * Version 4.0	| Added helper function for UART transmission (post-testing)
+ *
  * Description:
  * This file defines all the helper functions declared in esp.h, pixy.h,
  * and motor.h. 
