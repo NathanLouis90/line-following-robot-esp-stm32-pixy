@@ -95,7 +95,7 @@ static const char *on_red_led_response = "20";
 
 void start_uart_rx_to_idle(UART_Rx_t *uart_rx) {
 
-	// Check the threshold
+	// check the threshold
 	if (uart_rx->buffer_start > uart_rx->buffer_threshold) {
 		// Rewinding
 		uart_rx->buffer_start = uart_rx->buffer_base;
@@ -134,21 +134,21 @@ void start_uart_tx(UART_Tx_t *uart_tx) {
 }
 
 void process_uart_rx_error(UART_Rx_t *uart_rx) {
-// Get the error code
-	uint32_t currentErrorCode = HAL_UART_GetError(uart_rx->huart);
-//	printf("The error code is %u!\n", (uint8_t) currentErrorCode);
+// get the error code
+	uint32_t current_error_code = HAL_UART_GetError(uart_rx->huart);
+//	printf("The error code is %u!\n", (uint8_t) current_error_code);
 
-// Clear specific error flags based on error type
-	if (currentErrorCode & HAL_UART_ERROR_NONE) {
+// clear specific error flags based on error type
+	if (current_error_code & HAL_UART_ERROR_NONE) {
 //		printf("No error! :)\n");
 		return;
-	} else if (currentErrorCode & HAL_UART_ERROR_NE) {
+	} else if (current_error_code & HAL_UART_ERROR_NE) {
 		printf("Noisy!\n");
-	} else if (currentErrorCode & HAL_UART_ERROR_ORE) {
+	} else if (current_error_code & HAL_UART_ERROR_ORE) {
 		printf("Overrun error detected on UART%s!\n", uart_rx->identifier);
-	} else if (currentErrorCode & HAL_UART_ERROR_FE) {
+	} else if (current_error_code & HAL_UART_ERROR_FE) {
 		printf("Frame Error!\n");
-	} else if (currentErrorCode & HAL_UART_ERROR_DMA) {
+	} else if (current_error_code & HAL_UART_ERROR_DMA) {
 		printf("DMA Transfer Error on UART%s!\n", uart_rx->identifier);
 	}
 
