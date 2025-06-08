@@ -100,6 +100,24 @@ This state machine is straightforward, as it only involves the parsing of data r
 
 During AUTO mode, similar to the Pixy logic, UART2 RX will be idle. However, the movement of the motors will now depend on what the Pixy camera detects and processes.
 
+## PID Controller
+The PID Controller prevents the robot from deviating from left to right when both wheels are set to the same velocity, since each motor and wheel is different. Below shows a crude example of how PID is applied in the project:
+
+![PID Controller drawio](https://github.com/user-attachments/assets/5fd64306-6b22-4d53-90ab-6c417cf26175)
+
+For PID, there are two primary concepts: the coefficient (constant), which is tuned and adjusted to achieve the desired outcome, such as preventing overshooting or steady-state error; and the error, which is derived from using sensors to measure the controlled variable.
+
+PID consists of three components:
+1. Proportional Control [kp * error]
+2. Derivative Control [kd * (current_error - previous_error) / time_taken_between_these_errors)]
+3. Integral Control [ki * time_taken_between_each_pid_control_applied]
+
+Proportional Control corrects the current error by applying an output proportional to the error. For example, with an error of 100 m/s and a kp of 0.5, the controller outputs 50 m/s as a correction. As the error decreases, so does the correction, often leaving a small steady-state error because the output becomes zero when the error is zero.
+
+Integral Control addresses this steady-state error by accumulating past errors and adjusting the output accordingly. However, excessive accumulation can lead to overshooting the setpoint or “integral windup,” causing large, sometimes sudden corrections.
+
+Derivative Control predicts future error trends by responding to the rate of change of the error. This helps dampen rapid changes and reduces overshoot, improving stability and response.
+
 ## Areas for Improvement
 ### 1. UART AT Commands
 Sending "AT+RST" or "AT+RESTORE" leads to errors akin to UART despite resetting and restarting the reception. A solution is to accumulate data (UART1 RX will start accumulating data) at the instance UART1 TX transmits the command to the ESP, set a boolean flag to start the timeout, which pauses the UART2 TX from transmitting straightaway. Then, check the timeout in the while loop to ascertain whether UART2 TX is ready to transmit to the serial terminal. The code is as follows:
@@ -123,25 +141,51 @@ uart_tx.end += 1; // for the null char
 ```
 
 ### 3. Pixy Camera Algorithm
-Currently, the line-following algorithm is quite complex and requires better abstraction. Moreover, there is no proper logic to determine which command to send to the Pixy Camera, as only the "GET ALL" HEX command is being sent at an interval. The algorithm might benefit by only capturing vector lines initially, but at an instance where it detects an intersection, start a timeout and let the Pixy camera detect any barcode. The pseudocode is as follows:
+Currently, the line-following algorithm requires a lot of rework. We can introduce two state machines to allow the Pixy to detect accurately, allowing the entire robotic system to move smoothly.
+The first is a location state machine that determines the state in which the Pixy sees. So this could refer to lines, y-intersections, cross-intersections and more. The pseudocode is as follows:
 ```bash
-switch (Pixy.send_command_state) {
-  case SendVectorHex:
-    // send HEX command to find vectors
-    // if intersection present,
-    //   set timeout and switch state to SendBarcodeHex
-  case SendBarcodeHex:
-    // if within the timeout,
-    //   send HEX command to find barcode
-    // else,
-    //   switch state to SendVectorHex
+switch (Pixy.location) {
+  case LineChecking:
+    // check_for_lines();
+  case YIntersectionChecking:
+    // check_for_y_intersection();
+  case CrossIntersection:
+    // check_for_cross_intersection();
+  ...
+}
+```
+The second is a navigation state machine that determines the state in which the robot is currently moving. This can be forward, left or right. The pseudocode is as follows:
+```bash
+switch (Pixy.navigation) {
+  case Forward:
+    // move_forward();
+  case RotateLeft:
+    // rotate_left();
+  case RotateRight:
+    // rotate_right();
+  ...
 }
 ```
 
 ### 4. PID Tuning
 The PID is quite sensitive to overshoot and undershoot, and generally has a steady-state error, so some tuning is required. It might also benefit from extending the timeout, as it might take some time to calculate the velocity.
 
+## Miscellaneous
+There is an alternative way of collecting and parsing data from the ESP, which is known as the Ledger method, slightly different from the current direct buffer management implemented in my code. The ledger is a 2d array (index and contents) in which there is an rx pointer that reads data from ESP and immediately stores it into the ledger, and a tx pointer that transmits data in the ledger if there are any contents to transmit. The transmission is done via polling, where it transmits at an interval. The code for the struct is as follows:
+```bash
+typedef struct ledger_struct {
+  uint8_t ledger[100][4096];
+  uint8_t* rx_ptr;
+  uint8_t* tx_ptr;
+  uint8_t* threshold_ptr
+} Ledger_Entry_t
+```
+Then include a function in the ESP state machine that checks if there is content in the ledger to transmit. Note that the ledger can only contain 100 entries, hence, the threshold pointer can be used to prevent buffer overflow. 
+
+
 ## References
-1. https://www.datasheethub.com/espressif-esp8266-serial-esp-01-wifi-module/#google_vignette
-2. https://arduinogetstarted.com/tutorials/arduino-http-request
-3. https://docs.pixycam.com/wiki/doku.php?id=wiki:v2:overview
+1. https://www.st.com/resource/en/reference_manual/rm0316-stm32f303xbcde-stm32f303x68-stm32f328x8-stm32f358xc-stm32f398xe-advanced-armbased-mcus-stmicroelectronics.pdf
+2. https://www.datasheethub.com/espressif-esp8266-serial-esp-01-wifi-module/#google_vignette
+3. https://arduinogetstarted.com/tutorials/arduino-http-request
+4. https://docs.pixycam.com/wiki/doku.php?id=wiki:v2:overview
+5. https://www.youtube.com/watch?v=tFVAaUcOm4I
