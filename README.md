@@ -145,9 +145,9 @@ Currently, the line-following algorithm requires a lot of rework. We can introdu
 The first is a location state machine that determines the state in which the Pixy sees. So this could refer to lines, y-intersections, cross-intersections and more. The pseudocode is as follows:
 ```bash
 switch (Pixy.location) {
-  case LineChecking:
+  case Line:
     // check_for_lines();
-  case YIntersectionChecking:
+  case YIntersection:
     // check_for_y_intersection();
   case CrossIntersection:
     // check_for_cross_intersection();
@@ -180,7 +180,7 @@ typedef struct ledger_struct {
   uint8_t* threshold_ptr
 } Ledger_Entry_t;
 ```
-Then include a function in the ESP state machine that checks if there is content in the ledger to transmit. Note that the ledger can only contain 100 entries, hence, the threshold pointer can be used to prevent buffer overflow. 
+Then include a function in the ESP state machine to transmit when the transmitter is ready. Note that the ledger can only contain 100 entries, hence, the threshold pointer can be used to prevent buffer overflow. 
 
 
 ## References
