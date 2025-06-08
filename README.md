@@ -178,7 +178,7 @@ typedef struct ledger_struct {
   uint8_t* rx_ptr;
   uint8_t* tx_ptr;
   uint8_t* threshold_ptr
-} Ledger_Entry_t
+} Ledger_Entry_t;
 ```
 Then include a function in the ESP state machine that checks if there is content in the ledger to transmit. Note that the ledger can only contain 100 entries, hence, the threshold pointer can be used to prevent buffer overflow. 
 
