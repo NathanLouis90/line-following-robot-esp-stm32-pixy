@@ -171,7 +171,7 @@ switch (Pixy.navigation) {
 The PID is quite sensitive to overshoot and undershoot, and generally has a steady-state error, so some tuning is required. It might also benefit from extending the timeout, as it might take some time to calculate the velocity.
 
 ## Miscellaneous
-There is an alternative way of collecting and parsing data from the ESP, which is known as the Ledger method, slightly different from the current direct buffer management implemented in my code. The ledger is a 2d array (index and contents) in which there is an rx pointer that reads data from ESP and immediately stores it into the ledger, and a tx pointer that transmits data in the ledger if there are any contents to transmit. The transmission is done via polling, where it transmits at an interval. The code for the struct is as follows:
+There is an alternative way of collecting and parsing data from the ESP, which is known as the Ledger method, slightly different from the current direct buffer management implemented in my code. The ledger is a 2d array (index and contents) in which there is an rx pointer that reads data from ESP and immediately stores it into the ledger, and a tx pointer that transmits data in the ledger if there are any contents to transmit. The transmission can be immediately triggered as the current one, but only if the transmitter is not busy. The code for the struct is as follows:
 ```bash
 typedef struct ledger_struct {
   uint8_t ledger[100][4096];
