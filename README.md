@@ -146,6 +146,7 @@ uart_tx.end += 1; // for the null char
 The current line-following algorithm is quite complex. We can use a simpler technique where that involves a tracking vector. 
 The algorithm is as follows:
 Handle Barcodes -> Check for Vectors -> Orient Vectors to Point in Same Direction -> Find Next Vector to Follow -> Make Steering Decision
+
 The vectors has to be oriented as the Pixy camera will randomly assign vectors, hence there must be an algorithm to ensure that the vectors are aligned in the same direction. You can refer to the following image for a better picture (no pun intended):
 
 ![Orientation Diagram drawio](https://github.com/user-attachments/assets/858c6854-ca27-49dc-8bbd-7c029e92e057)
