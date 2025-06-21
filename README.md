@@ -4,7 +4,7 @@ This project involves using an STM32F303RE Nucleo Board to interface with severa
 - Pixy2 Camera for detecting vector lines, barcodes, and intersections
 - Makerdrive Motor Driver that connects to motors, and a combined photointerruptor module and velocimetric wheel to track velocity
 
-## High-Level System Hierarchy
+## System Hierarchy
 The following diagram defines the various elements that comprise the robot system, which performs communication, sensing, and navigation.
 
 ![High-Level System Architecture drawio](https://github.com/user-attachments/assets/eef70d12-ff19-4b28-8de5-2cff0da7fcde)
