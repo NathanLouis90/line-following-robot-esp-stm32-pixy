@@ -4,7 +4,7 @@ This project involves using an STM32F303RE Nucleo Board to interface with severa
 - Pixy2 Camera for detecting vector lines, barcodes, and intersections
 - Makerdrive Motor Driver that connects to motors, and a combined photointerruptor module and velocimetric wheel to track velocity
 
-## High-Level System Architecture
+## High-Level System Hierarchy
 The following diagram defines the various elements that comprise the robot system, which performs communication, sensing, and navigation.
 
 ![High-Level System Architecture drawio](https://github.com/user-attachments/assets/eef70d12-ff19-4b28-8de5-2cff0da7fcde)
@@ -132,17 +132,104 @@ if (ESP.started_accumulating) {
   }
 }
 ```
+
 ### 2. UART TX Dependency on UART RX
 As mentioned above, UART TX will trigger immediately when UART RX receives data, but since there are some issues, such as race conditions and the fact that UART RX and UART TX operate at different clock cycles, it might be better to decouple UART RX and UART TX. One way is to set two new pointers for UART TX: __start__, which points to the beginning of transmission, and __end__, which points to the instance where a __'\0'__ is detected. UART TX will continuously scan the buffer for contents to transmit (at an interval), thus acting independently from UART RX. The code is as follows:
+
 ```bash
 uart_tx.end = (uint8_t *) strchr((char*) uart_tx.start, '\0');
 uart_tx.data_size = uart_tx.end - uart_tx.start;
 uart_tx.end += 1; // for the null char
 ```
 
-### 3. Pixy Camera Algorithm
-Currently, the line-following algorithm requires a lot of rework. We can introduce two state machines to allow the Pixy to detect accurately, allowing the entire robotic system to move smoothly.
+### 3. Simpler Pixy Line-Following Algorithm
+The current line-following algorithm is quite complex. We can use a simpler technique where that involves a tracking vector. 
+The algorithm is as follows:
+Handle Barcodes -> Check for Vectors -> Orient Vectors to Point in Same Direction -> Find Next Vector to Follow -> Make Steering Decision
+The vectors has to be oriented as the Pixy camera will randomly assign vectors, hence there must be an algorithm to ensure that the vectors are aligned in the same direction. You can refer to the following image for a better picture (no pun intended):
+
+![Orientation Diagram drawio](https://github.com/user-attachments/assets/858c6854-ca27-49dc-8bbd-7c029e92e057)
+
+The pseudocode is as such:
+
+```bash
+// 1. Handle Barcodes
+if (Pixy.barcode_detected) {
+  switch (Pixy.barcode_value) {
+    case BarcodeForward:
+      Pixy.movement = Forward;
+      break;
+    // Fill up for the rest of the barcode values
+    default:
+      Pixy.barcode_detected = false;
+      break;
+  }
+
+  if (Pixy.barcode_detected) {
+    return; // get out because barcode is detected
+  }
+}
+
+// 2. Check for vectors
+if (Pixy.num_of_vectors == 0) {
+  Pixy.movement = Stop;
+  return;
+}
+
+// 3. Orient Vectors to Point in Same Direction
+// set the reference vector
+int ref_x1 = Pixy.vector[0].x1
+int ref_y1 = Pixy.vector[0].y1
+
+for (int i = 1; i < Pixy.num_of_vectors; ++i) {
+  int x0 = Pixy.vector[i].x0
+  int y0 = Pixy.vector[i].y0
+  int x1 = Pixy.vector[i].x1
+  int y1 = Pixy.vector[i].y1
+
+  if (x1 == ref_x1 && y1 == ref_y1) {
+    Pixy.vector[i].x0 = x1
+    Pixy.vector[i].y0 = y1
+    Pixy.vector[i].x1 = x0
+    Pixy.vector[i].y1 = y0
+
+    // recalculate angle
+    Pixy.angle = calculate_angle(Pixy.vector[i].x0, Pixy.vector[i].x1, Pixy.vector[i].y0, Pixy.vector[i].y1);
+  }
+}
+
+// 4. Find Next Vector to Follow
+int smallest_x1 = INT16_MAX;
+int index_of_smallest_x1 = -1;
+
+// look for vectors that connect to the end of vector[0]
+for (int i = 1; i < Pixy.num_of_vectors; i++) {
+    if (Pixy.vector[i].x0 == Pixy.vector[0].x1 && 
+        Pixy.vector[i].y0 == Pixy.vector[0].y1) {
+        
+        if (Pixy.vector[i].x1 < smallestX1) {
+            smallest_x1 = Pixy.vector[i].x1;
+            index_of_smallest_x1 = i;
+        }
+    }
+}
+
+// 5. Make Steering Decision
+int8_t x_error = CAMERA_CENTER_X - Pixy.vector[0].x1;
+
+if (abs(x_error) < THRESHOLD_X) {
+    Pixy.movement = Forward;
+} else if (x_error > THRESHOLD_X) {
+    Pixy.movement = Left;
+} else if (x_error < -THRESHOLD_X) {
+    Pixy.movement = Right;
+}
+```
+
+### 4. State Machines for Pixy
+We can introduce two state machines to allow the Pixy to detect accurately, allowing the entire robotic system to move smoothly.
 The first is a location state machine that determines the state in which the Pixy sees. So this could refer to lines, y-intersections, cross-intersections and more. The pseudocode is as follows:
+
 ```bash
 switch (Pixy.location) {
   case Line:
@@ -154,7 +241,9 @@ switch (Pixy.location) {
   ...
 }
 ```
+
 The second is a navigation state machine that determines the state in which the robot is currently moving. This can be forward, left or right. The pseudocode is as follows:
+
 ```bash
 switch (Pixy.navigation) {
   case Forward:
@@ -167,11 +256,9 @@ switch (Pixy.navigation) {
 }
 ```
 
-### 4. PID Tuning
-The PID is quite sensitive to overshoot and undershoot, and generally has a steady-state error, so some tuning is required. It might also benefit from extending the timeout, as it might take some time to calculate the velocity.
-
 ## Miscellaneous
 There is an alternative way of collecting and parsing data from the ESP, which is known as the Ledger method, slightly different from the current direct buffer management implemented in my code. The ledger is a 2d array (index and contents) in which there is an rx pointer that reads data from ESP and immediately stores it into the ledger, and a tx pointer that transmits data in the ledger if there are any contents to transmit. The transmission can be immediately triggered as the current one, but only if the transmitter is not busy. The code for the struct is as follows:
+
 ```bash
 typedef struct ledger_struct {
   uint8_t ledger[100][4096];
@@ -180,6 +267,7 @@ typedef struct ledger_struct {
   uint8_t* threshold_ptr;
 } Ledger_Entry_t;
 ```
+
 Then include a function in the ESP state machine to transmit when the transmitter is ready. Note that the ledger can only contain 100 entries, hence, the threshold pointer can be used to prevent buffer overflow. 
 
 
