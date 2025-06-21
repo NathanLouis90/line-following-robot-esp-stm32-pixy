@@ -78,7 +78,7 @@ On a high level, the ESP WiFi Module will act as a server, and the user who keye
 6. If "SEND OK" is received, send "AT+CIPCLOSE=CONNECTION_ID" to finish handling the TCP request to allow the website to display changes on the website and transition to "WaitingWebsiteSend" state to parse future incoming data from the user
 
 ## Pixy SPI Interface State Machine Logic 
-The SPI state machine logic works rather similarly to UART, however, a key difference is that data is handled synchronously (where SS is pulled low to trigger the CLK signal), hence error handling for frame or noise is not necessary for SPI. 
+The SPI state machine logic works rather similarly to UART; however, a key difference is that data is handled synchronously (where SS is pulled low to trigger the CLK signal), hence error handling for frame or noise is not necessary for SPI. 
 
 ![Pixy State Machine drawio](https://github.com/user-attachments/assets/3ce625a3-bb5f-4a23-8383-5859cb04a115)
 
@@ -145,7 +145,8 @@ uart_tx.end += 1; // for the null char
 ### 3. Simpler Pixy Line-Following Algorithm
 The current line-following algorithm is quite complex. We can use a simpler technique where that involves a tracking vector. 
 The algorithm is as follows:
-Handle Barcodes -> Check for Vectors -> Orient Vectors to Point in Same Direction -> Find Next Vector to Follow -> Make Steering Decision
+
+__Handle Barcodes -> Check for Vectors -> Orient Vectors to Point in Same Direction -> Find Next Vector to Follow -> Make Steering Decision__
 
 The vectors has to be oriented as the Pixy camera will randomly assign vectors, hence there must be an algorithm to ensure that the vectors are aligned in the same direction. You can refer to the following image for a better picture (no pun intended):
 
