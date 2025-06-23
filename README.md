@@ -150,7 +150,7 @@ __Handle Barcodes -> Check for Vectors -> Orient Vectors to Point in Same Direct
 
 The vectors has to be oriented as the Pixy camera will randomly assign vectors, hence there must be an algorithm to ensure that the vectors are aligned in the same direction. You can refer to the following image for a better picture (no pun intended):
 
-![Orientation Diagram drawio](https://github.com/user-attachments/assets/858c6854-ca27-49dc-8bbd-7c029e92e057)
+![Orientation Diagram drawio](https://github.com/user-attachments/assets/4f30ab07-7723-47dc-8376-ef79569a5674)
 
 The pseudocode is as such:
 
@@ -161,7 +161,15 @@ if (Pixy.barcode_detected) {
     case BarcodeForward:
       Pixy.movement = Forward;
       break;
-    // Fill up for the rest of the barcode values
+    case BarcodeLeft:
+      Pixy.movement = Left;
+      break;
+    case BarcodeRight:
+      Pixy.movement = Right;
+      break;
+    case BarcodeStop:
+      Pixy.movement = Stop;
+      break;
     default:
       Pixy.barcode_detected = false;
       break;
