@@ -266,6 +266,12 @@ switch (Pixy.navigation) {
 }
 ```
 
+## Physical Robot
+
+![image](https://github.com/user-attachments/assets/062bcdc3-357d-4031-be48-aa59b8dc0d5b)
+
+![image](https://github.com/user-attachments/assets/5a8ab0e6-814e-4b69-8a84-a25da43eb843)
+
 ## Miscellaneous
 There is an alternative way of collecting and parsing data from the ESP, which is known as the Ledger method, slightly different from the current direct buffer management implemented in my code. The ledger is a 2d array (index and contents) in which there is an rx pointer that reads data from ESP and immediately stores it into the ledger, and a tx pointer that transmits data in the ledger if there are any contents to transmit. The transmission can be immediately triggered as the current one, but only if the transmitter is not busy. The code for the struct is as follows:
 
@@ -279,7 +285,6 @@ typedef struct ledger_struct {
 ```
 
 Then include a function in the ESP state machine to transmit when the transmitter is ready. Note that the ledger can only contain 100 entries, hence, the threshold pointer can be used to prevent buffer overflow. 
-
 
 ## References
 1. https://www.st.com/resource/en/reference_manual/rm0316-stm32f303xbcde-stm32f303x68-stm32f328x8-stm32f358xc-stm32f398xe-advanced-armbased-mcus-stmicroelectronics.pdf
