@@ -143,15 +143,19 @@ uart_tx.end += 1; // for the null char
 ```
 
 ### 3. Simpler Pixy Line-Following Algorithm
-The current line-following algorithm is quite complex. We can use a simpler technique where that involves a tracking vector. 
+The current line-following algorithm is quite complex. We can use a simpler technique that involves a tracking vector. 
 The algorithm is as follows:
 
 __Handle Barcodes -> Check for Vectors -> Orient Vectors to Point in Same Direction -> Find Next Vector to Follow -> Make Steering Decision__
 
+When the Pixy sees a barcode, it will be made to perform a corresponding action that is tagged to the barcode and gets out of the function (e.g., the robot is made to move forward when it sees barcode 1).
+Otherwise, it will proceed to check for vectors. If there is none, the robot will be made to stop. 
 The vectors has to be oriented as the Pixy camera will randomly assign vectors, hence there must be an algorithm to ensure that the vectors are aligned in the same direction. You can refer to the following image for a better picture (no pun intended):
 
 ![Orientation Diagram drawio](https://github.com/user-attachments/assets/4f30ab07-7723-47dc-8376-ef79569a5674)
 
+It then seeks for a vector that is the shortest in terms of horizontal width by quickly running through the vector list and then storing it into a variable.
+Finally, it would make a steering decision based on the vector chosen (e.g., if the shortest vector lies on the left hand side of the Pixy view, it will be made to turn left).
 The pseudocode is as such:
 
 ```bash
